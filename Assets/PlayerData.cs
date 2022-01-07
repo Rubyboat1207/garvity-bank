@@ -35,6 +35,31 @@ public class PlayerData
         DeathCount = pdh.DeathCount;
     }
 
+    public static void SetKeybindByID(int id, KeyCode to_change)
+    {
+        switch(id)
+        {
+            case 1: CompassControl_Down = to_change; break;
+            case 2: CompassControl_Up = to_change; break;
+            case 3: CompassControl_Left = to_change; break;
+            case 4: CompassControl_Right = to_change; break;
+            case 5: CompassControl_Confirm = to_change; break;
+            default: break;
+        }
+    }
+    public static KeyCode GetKeybindByID(int id)
+    {
+        switch (id)
+        {
+            case 1: return CompassControl_Down;
+            case 2: return CompassControl_Up;
+            case 3: return CompassControl_Left;
+            case 4: return CompassControl_Right;
+            case 5: return CompassControl_Confirm;
+            default: return KeyCode.None;
+        }
+    }
+
     [Serializable]
     class PlayerDataHolder
     {
