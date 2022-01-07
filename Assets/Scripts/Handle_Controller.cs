@@ -43,6 +43,7 @@ public class Handle_Controller : MonoBehaviour
     
     public void ChangeDirection(Directions direction)
     {
+        if (CompassHandler.IsDirectionDisabled(direction)) { return; }
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, (int) direction));
     }
 }
