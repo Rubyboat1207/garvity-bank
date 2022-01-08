@@ -13,6 +13,7 @@ public class PlayerData
     public static KeyCode CompassControl_Down = KeyCode.K;
     public static KeyCode CompassControl_Confirm = KeyCode.Return;
     public static int DeathCount = 0;
+    public static int current_checkpoint;
 
     public static void SaveConfig()
     {
@@ -21,10 +22,14 @@ public class PlayerData
         configfile.SetLength(0);
         byte[] data = Encoding.UTF8.GetBytes(json);
         configfile.Write(data, 0, data.Length);
-        LoadConfig();
+        configfile.Close();
     }
     public static void LoadConfig()
     {
+        if(!File.Exists("./config.json"))
+        {
+            SaveConfig();
+        }
         StreamReader configfile = new StreamReader("./config.json");
         PlayerDataHolder pdh = JsonUtility.FromJson<PlayerDataHolder>(configfile.ReadToEnd());
         CompassControl_Left = pdh.CompassControl_Left;
@@ -33,6 +38,7 @@ public class PlayerData
         CompassControl_Down = pdh.CompassControl_Down;
         CompassControl_Confirm = pdh.CompassControl_Confirm;
         DeathCount = pdh.DeathCount;
+        configfile.Close();
     }
 
     public static void SetKeybindByID(int id, KeyCode to_change)

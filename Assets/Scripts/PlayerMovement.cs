@@ -18,6 +18,8 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        PlayerData.LoadConfig();
+        PlayerData.SaveConfig();
     }
 
     public void Kill()
@@ -33,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        compassHandler.UpdatePointer();
         moveVector *= 0.5f * Time.deltaTime;
         if (controller.isGrounded == false)
         {
