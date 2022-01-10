@@ -11,6 +11,20 @@ public class CompassHandler : MonoBehaviour
     public static Handle_Controller.Directions gotoDirection = Handle_Controller.Directions.Down;
     public static bool[] DisabledDirections = { false, false, false, false };
 
+    void Start()
+    {
+        PlayerMovement.OnDeath.AddListener(OnDeath);
+    }
+
+    void OnDeath()
+    {
+        EnableDirection(Handle_Controller.Directions.Up);
+        EnableDirection(Handle_Controller.Directions.Down);
+        EnableDirection(Handle_Controller.Directions.Left);
+        EnableDirection(Handle_Controller.Directions.Right);
+        UpdatePointer();
+    }
+
     public static void DisableDirection(Handle_Controller.Directions direction)
     {
         switch (direction)

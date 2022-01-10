@@ -18,7 +18,12 @@ public class Handle_Controller : MonoBehaviour
 
     private void Start()
     {
-        
+        PlayerMovement.OnDeath.AddListener(OnDeath);
+    }
+
+    void OnDeath()
+    {
+        ChangeDirection(Directions.Down);
     }
     void Update()
     {

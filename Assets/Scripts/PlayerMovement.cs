@@ -14,9 +14,19 @@ public class PlayerMovement : MonoBehaviour
     CompassHandler compassHandler;
     [SerializeField]
     Handle_Controller Handle_Controller;
+    [SerializeField]
+    Vector3 move;
+    [SerializeField]
+    GameObject MobileControls;
+    float autosave_timer;
+    public static UnityEngine.Events.UnityEvent OnDeath = new UnityEngine.Events.UnityEvent();
     // Start is called before the first frame update
     void Start()
     {
+        if (!Application.isMobilePlatform)
+        {
+            MobileControls.SetActive(false);
+        }
         controller = GetComponent<CharacterController>();
         PlayerData.LoadConfig();
         PlayerData.SaveConfig();
@@ -25,33 +35,53 @@ public class PlayerMovement : MonoBehaviour
     public void Kill()
     {
         PlayerData.DeathCount++;
-        Handle_Controller.ChangeDirection(Handle_Controller.Directions.Down);
-        compassHandler.UpdatePointer();
+        OnDeath.Invoke();
+        PlayerData.SaveConfig();
         Debug.Log("dead");
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-
-    // Update is called once per frame
-    void Update()
+    public void ChangeMoveX(float change)
     {
-        compassHandler.UpdatePointer();
+        if (CompassHandler.gotoDirection == Handle_Controller.Directions.Down ^ CompassHandler.gotoDirection == Handle_Controller.Directions.Up)
+        {
+            Debug.Log("x_worked");
+            move = new Vector3(change,0);
+            Debug.Log(move);
+        }
+    }
+    public void ChangeMoveY(float change)
+    {
+        if (CompassHandler.gotoDirection == Handle_Controller.Directions.Left ^ CompassHandler.gotoDirection == Handle_Controller.Directions.Right)
+        {
+            Debug.Log("y_worked");
+            move = new Vector3(0, change);
+        }
+    }
+    // Update is called once per frame
+    void LateUpdate()
+    {
+        autosave_timer += Time.deltaTime;
+        if(autosave_timer > 500)
+        {
+            PlayerData.SaveConfig();
+        }
         moveVector *= 0.5f * Time.deltaTime;
         if (controller.isGrounded == false)
         {
             //Add our gravity Vecotr
             moveVector += Physics.gravity;
         }
-        Vector3 move = Vector3.zero;
-        if ((int) CompassHandler.gotoDirection == 0 ^ (int)CompassHandler.gotoDirection == 180)
+        if (!Application.isMobilePlatform && CompassHandler.gotoDirection == Handle_Controller.Directions.Down ^ CompassHandler.gotoDirection == Handle_Controller.Directions.Up)
         {
             move = new Vector3(Input.GetAxis("Horizontal"), 0, 0);
         }
-        if ((int)CompassHandler.gotoDirection == 270 ^ (int)CompassHandler.gotoDirection == 90)
+        if (!Application.isMobilePlatform && CompassHandler.gotoDirection == Handle_Controller.Directions.Left ^ CompassHandler.gotoDirection == Handle_Controller.Directions.Right)
         {
             move = new Vector3(0, Input.GetAxis("Vertical"), 0);
         }
         //Apply our move Vector , remeber to multiply by Time.delta
         controller.Move((moveVector + (move * Speed)) * Time.deltaTime );
+        move = Vector3.zero;
     }
 }

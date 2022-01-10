@@ -14,11 +14,12 @@ public class PlayerData
     public static KeyCode CompassControl_Confirm = KeyCode.Return;
     public static int DeathCount = 0;
     public static int current_checkpoint;
-
+    public static string path = "/config.json";
+    public static bool isMobile = true;
     public static void SaveConfig()
     {
         string json = JsonUtility.ToJson(new PlayerDataHolder(CompassControl_Left,CompassControl_Right,CompassControl_Up,CompassControl_Down,CompassControl_Confirm,DeathCount));
-        FileStream configfile = File.Create("./config.json");
+        FileStream configfile = File.Create(Application.persistentDataPath + path);
         configfile.SetLength(0);
         byte[] data = Encoding.UTF8.GetBytes(json);
         configfile.Write(data, 0, data.Length);
@@ -26,11 +27,11 @@ public class PlayerData
     }
     public static void LoadConfig()
     {
-        if(!File.Exists("./config.json"))
+        if(!File.Exists(Application.persistentDataPath + path))
         {
             SaveConfig();
         }
-        StreamReader configfile = new StreamReader("./config.json");
+        StreamReader configfile = new StreamReader(Application.persistentDataPath + path);
         PlayerDataHolder pdh = JsonUtility.FromJson<PlayerDataHolder>(configfile.ReadToEnd());
         CompassControl_Left = pdh.CompassControl_Left;
         CompassControl_Right = pdh.CompassControl_Right;
